@@ -1,0 +1,33 @@
+from PIL import Image, ImageDraw
+from math import sqrt
+import random
+def distance_halo(image,targetX, targetY, modifier) :
+    img = Image.open(image)
+    pixels = img.load()
+    for y in range(img.height):
+        for x in range(img.width):
+            red = pixels[x,y][0]
+            green = pixels[x,y][1]
+            blue = pixels[x,y][2]
+            mod = int(sqrt((targetX-x)**2+(targetY-y)**2)/modifier)
+            pixels[x,y] = (red - mod, green - mod, blue - mod)
+    img.save(image[:-4]+"_halo.png")
+#distance_halo("biking-hero-1.png",450, 300, 4)
+
+def pointillism(image):
+    img = Image.open(image)
+    pixels = img.load()
+
+    canvas = Image.new("RGB",(img.width,img.height), "white")
+
+    for run in range(1000000):
+        x = random.randint(0, img.width - 1)
+        y = random.randint(0, img.height - 1)
+
+        size = random.randint(5,10)
+        ellipsebox=[(x,y),(x+size,y+size)]
+        draw = ImageDraw.Draw(canvas)
+        draw.ellipse(ellipsebox,fill=(pixels[x,y][0],pixels[x,y][1],pixels[x,y][2]))
+        del draw
+    canvas.save(image[:-4]+"_pointillism.png")
+pointillism("biking-hero-1.png")
